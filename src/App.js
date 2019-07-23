@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 
-const dotenv = require('dotenv');
-dotenv.config();
+// const dotenv = require('dotenv');
+// const env = dotenv.config();
+require('dotenv').config()
 
 class App extends Component {
   constructor(){
@@ -167,7 +168,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.state.loggedIn ? <div></div> : <a href={process.env.LOGIN_URL} > Login to Spotify </a>}
+        {this.state.loggedIn ? <div></div> : <a href={process.env.REACT_APP_LOGIN_URL} > Login to Spotify </a>}
         { this.state.loggedIn &&
           <div>
             <img src={this.state.nowPlaying.albumArt} style={{ height: '90vh' }}/>
