@@ -1,8 +1,6 @@
 # Spotify Now Playing `Client`
 > The Client of my `Spotify Now Playing` App. This app shows what music a user is currently playing an it allows them to pause/play/skip what is now playing. 
 
-![Example screenshot](.public/img/READMEscreenshot.png)
-
 ## View Demo
 This project has been deployed to [Netlify](https://www.netlify.com/) and can be found [Here](https://spotifynowplaying.netlify.com/)
 
