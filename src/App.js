@@ -1,39 +1,37 @@
 import React, { Component } from 'react';
 import './App.css';
 
-// const dotenv = require('dotenv');
-// const env = dotenv.config();
 require('dotenv').config()
 
 class App extends Component {
   constructor(){
     super();
     const params = this.getHashParams();
-    const token = params.access_token;
+    this.token = params.access_token;
+    this.myHeaders = new Headers({
+      "Authorization":
+      "Bearer " + this.token
+    });
+
+    this.url = 'https://api.spotify.com/v1/me/player';
     this.state = {
-      loggedIn: token ? true : false,
+      loggedIn: this.token ? true : false,
       nowPlaying: { name: 'Not Checked', albumArt: '', isPlaying: false },
-      token: token,
     }
   }
   componentDidMount() {
-    let timerId
-    timerId =  setInterval(
+    this.timerId = setInterval(
       () => this.getNowPlaying(),
       1000
   );
-    this.setState({
-      timerId: timerId
-    })
   }
   componentWillUnmount() {
-    window.clearInterval(this.state.timerId)
+    window.clearInterval(this.timerId)
   }
 
     getHashParams() {
-    var hashParams = {};
-    var e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
+    let hashParams = {};
+    let e, r = /([^&;=]+)=?([^&;]*)/g, q = window.location.hash.substring(1);
     e = r.exec(q)
     while (e) {
        hashParams[e[1]] = decodeURIComponent(e[2]);
@@ -43,16 +41,9 @@ class App extends Component {
   }
 
   getNowPlaying(){
-    let myHeaders = new Headers({
-      "Authorization":
-      "Bearer " + this.state.token
-    });
-
-    var url = 'https://api.spotify.com/v1/me/player';
-
-    fetch(url, {
+    fetch(this.url, {
       method: 'GET', 
-      headers:myHeaders
+      headers:this.myHeaders
     }).then(response => {
       return response.text()
     })
@@ -72,18 +63,11 @@ class App extends Component {
   }
 
   pause(){
-    let myHeaders = new Headers({
-      "Accept": "application/json",
-      "Content-type": "application/json",
-      "Authorization":
-      "Bearer " + this.state.token
-    });
-
-    var url = 'https://api.spotify.com/v1/me/player/pause';
+    const url = this.url + '/pause';
 
     fetch(url, {
       method: 'PUT', 
-      headers:myHeaders
+      headers:this.myHeaders
     }).then(response => {
       return response.text()
     })
@@ -95,18 +79,11 @@ class App extends Component {
     })
   }
   play(){
-    let myHeaders = new Headers({
-      "Accept": "application/json",
-      "Content-type": "application/json",
-      "Authorization":
-      "Bearer " + this.state.token
-    });
-
-    var url = 'https://api.spotify.com/v1/me/player/play';
+    const url = this.url + '/play';
 
     fetch(url, {
       method: 'PUT', 
-      headers:myHeaders
+      headers:this.myHeaders
     }).then(response => {
       return response.text()
     })
@@ -118,18 +95,11 @@ class App extends Component {
     })
   }
   next(){
-    let myHeaders = new Headers({
-      "Accept": "application/json",
-      "Content-type": "application/json",
-      "Authorization":
-      "Bearer " + this.state.token
-    });
-
-    var url = 'https://api.spotify.com/v1/me/player/next';
+    const url = this.url + '/next';
 
     fetch(url, {
       method: 'POST', 
-      headers:myHeaders
+      headers:this.myHeaders
     }).then(response => {
       return response.text()
     })
@@ -141,18 +111,11 @@ class App extends Component {
     })
   }
   prev(){
-    let myHeaders = new Headers({
-      "Accept": "application/json",
-      "Content-type": "application/json",
-      "Authorization":
-      "Bearer " + this.state.token
-    });
-
-    var url = 'https://api.spotify.com/v1/me/player/previous';
+    const url = this.url + '/previous';
 
     fetch(url, {
       method: 'POST', 
-      headers:myHeaders
+      headers:this.myHeaders
     }).then(response => {
       return response.text()
     })
@@ -171,7 +134,7 @@ class App extends Component {
         {this.state.loggedIn ? <div></div> : <a href={process.env.REACT_APP_LOGIN_URL} > Login to Spotify </a>}
         { this.state.loggedIn &&
           <div>
-            <img src={this.state.nowPlaying.albumArt} style={{ height: '90vh' }}/>
+            <img alt="album cover" src={this.state.nowPlaying.albumArt} style={{ height: '90vh' }}/>
             <br/>
             <button onClick={() => this.prev()}>
               Prev
